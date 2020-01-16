@@ -82,3 +82,8 @@ for syst in systematics:
 pp = pprint.PrettyPrinter(indent=4)
 pprint.pprint(results)
 pprint.pprint(results2)
+
+with open("misIDSF.json","w") as outfile:
+        json.dump(results,outfile)
+
+
