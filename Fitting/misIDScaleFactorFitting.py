@@ -32,6 +32,7 @@ systematics  = ["nominal",
 ]
 
 results = {}
+results2 = {}
 
 ## Get data from the input root file
 data = _file.Get("dataObs")
@@ -63,17 +64,21 @@ for syst in systematics:
     ## status==0 corresponds to fits that converged
     
     ## Get the value of fit parameters
-    fitResults = fit.GetFitter().Result().Parameters()[0]
+    fitResults_misID = fit.GetFitter().Result().Parameters()[0]
+    fitResults_otherMC = fit.GetFitter().Result().Parameters()[1]
     
     ## In order to calculate the electron mis-identification scale factor (SF), we extract the value of the fit parameter for the misID MC and use it to calculate the fraction of mis-identified electrons
-    misIDSF  = data.Integral()*fitResults/mc[0].Integral()
+    misIDSF  = data.Integral()*fitResults_misID/mc[0].Integral()
+    otherMCSF = data.Integral()*fitResults_otherMC/mc[1].Integral()
     if not status==0:
         print (f"Error in fit while processing {syst} sample: exit status {status}")
         
     ## Fill the dictionary "results" with the misID SF for each systematic
     results[syst] = misIDSF
+    results2[syst] = otherMCSF
 
     del fit
 
 pp = pprint.PrettyPrinter(indent=4)
 pprint.pprint(results)
+pprint.pprint(results2)
